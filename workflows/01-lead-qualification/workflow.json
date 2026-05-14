@@ -1,0 +1,212 @@
+{
+  "name": "01 — Lead Qualification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-qualification",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-4001-8001-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "lead-qualification"
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\n\nconst lines = [\n  'Sei un assistente commerciale per una PMI italiana. Analizza questo lead e classificalo.',\n  '',\n  'DATI LEAD:',\n  '- Nome: ' + (d.nome || 'non specificato'),\n  '- Email: ' + (d.email || 'non specificata'),\n  '- Azienda: ' + (d.azienda || 'non specificata'),\n  '- Telefono: ' + (d.telefono || 'non specificato'),\n  '- Messaggio: ' + (d.messaggio || 'nessun messaggio'),\n  '',\n  'Rispondi SOLO con JSON valido (nessun markdown, nessun testo aggiuntivo):',\n  '{',\n  '  \"classificazione\": \"hot\" | \"warm\" | \"cold\",',\n  '  \"score\": <intero 0-100>,',\n  '  \"reasoning\": \"<spiegazione in italiano, max 2 righe>\",',\n  '  \"priorita_risposta\": \"immediata\" | \"entro_24h\" | \"bassa\"',\n  '}',\n  '',\n  'Criteri:',\n  '- hot (70-100): interesse commerciale esplicito, budget/urgenza chiari, azienda riconoscibile',\n  '- warm (40-69): interesse generico ma pertinente, settore rilevante, nessuna urgenza',\n  '- cold (0-39): richiesta vaga, studenti, concorrenti, spam, fuori target'\n];\n\nreturn [{ json: { ...d, _claude_body: {\n  model: 'claude-sonnet-4-5',\n  max_tokens: 512,\n  messages: [{ role: 'user', content: lines.join('\\n') }]\n} } }];"
+      },
+      "id": "a1b2c3d4-0001-4001-8001-000000000002",
+      "name": "Prepara Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json._claude_body }}",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-4001-8001-000000000003",
+      "name": "Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const w = $('Webhook').first().json;\nconst text = $input.first().json.content[0].text.trim();\n\nconst m = text.match(/\\{[\\s\\S]*\\}/);\nif (!m) throw new Error('Nessun JSON trovato. Output Claude: ' + text.slice(0, 200));\n\nlet p;\ntry { p = JSON.parse(m[0]); }\ncatch (e) { throw new Error('JSON non parsabile: ' + m[0].slice(0, 200)); }\n\nconst pMap = {\n  immediata: 'entro poche ore',\n  entro_24h: 'entro 24 ore',\n  bassa: 'il prima possibile'\n};\n\nreturn [{ json: {\n  data_ricezione: new Date().toISOString(),\n  nome: w.nome || '',\n  email: w.email || '',\n  azienda: w.azienda || '',\n  telefono: w.telefono || '',\n  messaggio: w.messaggio || '',\n  classificazione: p.classificazione,\n  score: p.score,\n  reasoning: p.reasoning,\n  priorita_risposta: p.priorita_risposta,\n  descrizione_priorita: pMap[p.priorita_risposta] || 'il prima possibile'\n} }];"
+      },
+      "id": "a1b2c3d4-0001-4001-8001-000000000004",
+      "name": "Parse Risposta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_SPREADSHEET_ID_HERE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Foglio1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID_HERE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "a1b2c3d4-0001-4001-8001-000000000005",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [1200, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.classificazione }}",
+              "operation": "notEqual",
+              "value2": "cold"
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-0001-4001-8001-000000000006",
+      "name": "Router",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1440, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "tuamail@tuaazienda.it",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ 'Ciao ' + $json.nome + ' — abbiamo ricevuto la tua richiesta' }}",
+        "emailType": "html",
+        "message": "={{ '<html><body style=\"font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px\"><p>Ciao <strong>' + $json.nome + '</strong>,</p><p>grazie per averci contattato. Ho ricevuto il tuo messaggio.</p><p>Il tuo caso è stato preso in carico — ti ricontatterò <strong>' + $json.descrizione_priorita + '</strong>.</p><p>Se hai urgenza, rispondi direttamente a questa email.</p><br><p>A presto,<br><strong>[Il tuo nome]</strong><br>[Azienda] | [Sito]</p></body></html>' }}",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-4001-8001-000000000007",
+      "name": "Email Calda",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1680, 160],
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "tuamail@tuaazienda.it",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Abbiamo ricevuto il tuo messaggio",
+        "emailType": "html",
+        "message": "={{ '<html><body style=\"font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px\"><p>Ciao <strong>' + $json.nome + '</strong>,</p><p>Grazie per averci contattato.</p><p>Abbiamo ricevuto il tuo messaggio e ti risponderemo il prima possibile.</p><br><p>Cordiali saluti,<br><strong>[Il tuo nome]</strong><br>[Azienda]</p></body></html>' }}",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0001-4001-8001-000000000008",
+      "name": "Email Cortesia",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1680, 440],
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [{"node": "Prepara Prompt", "type": "main", "index": 0}]
+      ]
+    },
+    "Prepara Prompt": {
+      "main": [
+        [{"node": "Claude API", "type": "main", "index": 0}]
+      ]
+    },
+    "Claude API": {
+      "main": [
+        [{"node": "Parse Risposta", "type": "main", "index": 0}]
+      ]
+    },
+    "Parse Risposta": {
+      "main": [
+        [{"node": "Google Sheets", "type": "main", "index": 0}]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [{"node": "Router", "type": "main", "index": 0}]
+      ]
+    },
+    "Router": {
+      "main": [
+        [{"node": "Email Calda", "type": "main", "index": 0}],
+        [{"node": "Email Cortesia", "type": "main", "index": 0}]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a1b2c3d4-0001-4001-8001-000000000099",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "n8n-automation-pack-italia"
+  },
+  "id": "01-lead-qualification",
+  "tags": []
+}
