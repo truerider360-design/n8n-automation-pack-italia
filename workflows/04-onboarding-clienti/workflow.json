@@ -1,0 +1,183 @@
+{
+  "name": "04 — Onboarding Clienti",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "onboarding-cliente",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "a4b5c6d7-0004-4004-8004-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "onboarding-cliente"
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\n\nconst nome_cliente = d.nome || d.name || d.cliente || 'Cliente';\nconst azienda = d.azienda || d.company || nome_cliente;\nconst tipo_servizio = d.servizio || d.service || d.tipo || 'consulenza';\nconst data_inizio = d.data_inizio || new Date().toLocaleDateString('it-IT');\nconst email_cliente = d.email || '';\nconst nome_cartella = azienda + ' — Onboarding ' + new Date().getFullYear();\n\nconst tasks = [\n  '- [ ] Invio questionario iniziale',\n  '- [ ] Kickoff call pianificato',\n  '- [ ] Accesso condiviso tools e credenziali',\n  '- [ ] Prima deliverable definita e approvata',\n  '- [ ] Check-in settimana 1',\n  '- [ ] Check-in settimana 2',\n  '- [ ] Review e chiusura onboarding'\n].join('\\n');\n\nconst lines = [\n  'Scrivi una email di benvenuto professionale e calorosa per un nuovo cliente.',\n  '',\n  'DATI CLIENTE:',\n  '- Nome: ' + nome_cliente,\n  '- Azienda: ' + azienda,\n  '- Servizio acquistato: ' + tipo_servizio,\n  '- Data inizio collaborazione: ' + data_inizio,\n  '',\n  'Rispondi SOLO con JSON valido (nessun markdown, nessun testo extra):',\n  '{',\n  '  \"oggetto\": \"<oggetto email breve, max 60 caratteri>\",',\n  '  \"corpo_html\": \"<email HTML completa: apertura calorosa con nome, conferma servizio, 3 prossimi passi numerati, chiusura con invito a rispondere per domande — tono professionale ma umano, max 200 parole>\"',\n  '}'\n].join('\\n');\n\nreturn [{ json: {\n  nome_cliente,\n  email_cliente,\n  azienda,\n  tipo_servizio,\n  data_inizio,\n  nome_cartella,\n  _taskade_body: {\n    name: 'Onboarding — ' + azienda,\n    content: tasks\n  },\n  _claude_body: {\n    model: 'claude-sonnet-4-5',\n    max_tokens: 1024,\n    messages: [{ role: 'user', content: lines }]\n  }\n} }];"
+      },
+      "id": "a4b5c6d7-0004-4004-8004-000000000002",
+      "name": "Prepara Dati Cliente",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json._claude_body }}",
+        "options": {}
+      },
+      "id": "a4b5c6d7-0004-4004-8004-000000000003",
+      "name": "Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $('Prepara Dati Cliente').first().json;\nconst text = $input.first().json.content[0].text.trim();\n\nconst m = text.match(/\\{[\\s\\S]*\\}/);\nif (!m) throw new Error('Nessun JSON trovato: ' + text.slice(0, 200));\n\nlet parsed;\ntry { parsed = JSON.parse(m[0]); }\ncatch(e) { throw new Error('JSON non parsabile: ' + m[0].slice(0, 200)); }\n\nreturn [{ json: {\n  ...d,\n  email_oggetto: parsed.oggetto,\n  email_corpo_html: parsed.corpo_html\n} }];"
+      },
+      "id": "a4b5c6d7-0004-4004-8004-000000000004",
+      "name": "Parse Email Claude",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "tuamail@tuaazienda.it",
+        "toEmail": "={{ $json.email_cliente }}",
+        "subject": "={{ $json.email_oggetto }}",
+        "emailType": "html",
+        "message": "={{ $json.email_corpo_html }}",
+        "options": {}
+      },
+      "id": "a4b5c6d7-0004-4004-8004-000000000005",
+      "name": "Email Benvenuto",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1200, 120],
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIAL_ID",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "operation": "create",
+        "name": "={{ $json.nome_cartella }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "root",
+          "mode": "list",
+          "cachedResultName": "/ (Root)"
+        },
+        "options": {}
+      },
+      "id": "a4b5c6d7-0004-4004-8004-000000000006",
+      "name": "Google Drive — Crea Cartella",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [1200, 300],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.taskade.com/api/v1/folders/YOUR_TASKADE_FOLDER_ID/projects",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json._taskade_body }}",
+        "options": {}
+      },
+      "id": "a4b5c6d7-0004-4004-8004-000000000007",
+      "name": "Taskade — Crea Progetto",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 480],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "TASKADE_CREDENTIAL_ID",
+          "name": "Taskade API Key"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [{"node": "Prepara Dati Cliente", "type": "main", "index": 0}]
+      ]
+    },
+    "Prepara Dati Cliente": {
+      "main": [
+        [{"node": "Claude API", "type": "main", "index": 0}]
+      ]
+    },
+    "Claude API": {
+      "main": [
+        [{"node": "Parse Email Claude", "type": "main", "index": 0}]
+      ]
+    },
+    "Parse Email Claude": {
+      "main": [
+        [
+          {"node": "Email Benvenuto",           "type": "main", "index": 0},
+          {"node": "Google Drive — Crea Cartella", "type": "main", "index": 0},
+          {"node": "Taskade — Crea Progetto",    "type": "main", "index": 0}
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a4b5c6d7-0004-4004-8004-000000000099",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "n8n-automation-pack-italia"
+  },
+  "id": "04-onboarding-clienti",
+  "tags": []
+}
