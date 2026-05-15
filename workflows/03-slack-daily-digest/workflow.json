@@ -1,0 +1,201 @@
+{
+  "name": "03 — Slack Daily Digest",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000001",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://www.ninja.it/feed/"
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000002",
+      "name": "RSS Ninja Marketing",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [480, 120]
+    },
+    {
+      "parameters": {
+        "url": "https://blog.hubspot.com/marketing/rss.xml"
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000003",
+      "name": "RSS HubSpot Marketing",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [480, 260]
+    },
+    {
+      "parameters": {
+        "url": "https://venturebeat.com/category/ai/feed/"
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000004",
+      "name": "RSS VentureBeat AI",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [480, 400]
+    },
+    {
+      "parameters": {
+        "url": "https://github.com/n8n-io/n8n/releases.atom"
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000005",
+      "name": "GitHub n8n Releases",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [480, 540]
+    },
+    {
+      "parameters": {
+        "url": "https://github.com/langchain-ai/langchain/releases.atom"
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000006",
+      "name": "GitHub LangChain Releases",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [480, 680]
+    },
+    {
+      "parameters": {
+        "mode": "append",
+        "options": {}
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000007",
+      "name": "Merge Fonti",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [720, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst oneDayAgo = new Date();\noneDayAgo.setHours(oneDayAgo.getHours() - 24);\n\nconst filtered = items.filter(function(item) {\n  const d = new Date(item.json.isoDate || item.json.pubDate || item.json.updated || '');\n  return !isNaN(d) && d >= oneDayAgo;\n});\n\n// Fallback: se nessun articolo nelle ultime 24h (weekend/festivi), prendi i piu recenti\nconst toProcess = filtered.length > 0 ? filtered : items.slice(0, 8);\n\nreturn toProcess\n  .sort(function(a, b) {\n    return new Date(b.json.isoDate || b.json.pubDate || b.json.updated || 0)\n         - new Date(a.json.isoDate || a.json.pubDate || a.json.updated || 0);\n  })\n  .slice(0, 15)\n  .map(function(item) {\n    var hostname;\n    try { hostname = new URL(item.json.link).hostname; } catch(e) { hostname = ''; }\n    var isGithub = hostname.includes('github.com');\n    return {\n      json: {\n        titolo: item.json.title || '',\n        link: item.json.link || '',\n        fonte: isGithub ? 'GitHub' : hostname,\n        tipo: isGithub ? 'Release' : 'Articolo',\n        snippet: String(item.json.contentSnippet || item.json.content || item.json.summary || '').replace(/<[^>]*>/g, '').slice(0, 200)\n      }\n    };\n  });"
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000008",
+      "name": "Filtra 24 Ore",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst lista = items.map(function(item, i) {\n  return (i + 1) + '. [' + item.json.tipo + ' · ' + item.json.fonte + '] ' + item.json.titolo\n    + '\\n   Link: ' + item.json.link\n    + '\\n   Snippet: ' + item.json.snippet;\n}).join('\\n\\n');\n\nconst oggi = new Date().toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });\n\nconst lines = [\n  'Sei un assistente editoriale per un team italiano che lavora su Marketing e AI.',\n  '',\n  'Hai ' + items.length + ' aggiornamenti da fonti diverse delle ultime 24 ore (articoli e release GitHub).',\n  'Seleziona i 5 piu interessanti e rilevanti per un team di marketing/tech.',\n  'Il digest va in Slack: tieni i riassunti brevissimi (max 120 caratteri ciascuno).',\n  '',\n  'AGGIORNAMENTI DISPONIBILI:',\n  lista,\n  '',\n  'Rispondi SOLO con JSON valido (nessun markdown, nessun testo extra):',\n  '{',\n  '  \"intro\": \"Daily Digest ' + oggi + '\",',\n  '  \"articoli\": [',\n  '    {',\n  '      \"tag\": \"<AI|Marketing|Business|Release|Tools>\",',\n  '      \"titolo\": \"<titolo breve in italiano, max 60 caratteri>\",',\n  '      \"riassunto\": \"<1-2 frasi concise, max 120 caratteri>\",',\n  '      \"link\": \"<url originale>\"',\n  '    }',\n  '  ]',\n  '}'\n].join('\\n');\n\nreturn [{ json: { _claude_body: {\n  model: 'claude-sonnet-4-5',\n  max_tokens: 1024,\n  messages: [{ role: 'user', content: lines }]\n} } }];"
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000009",
+      "name": "Prepara Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json._claude_body }}",
+        "options": {}
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000010",
+      "name": "Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 400],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.content[0].text.trim();\n\nconst m = text.match(/\\{[\\s\\S]*\\}/);\nif (!m) throw new Error('Nessun JSON trovato: ' + text.slice(0, 200));\n\nlet d;\ntry { d = JSON.parse(m[0]); }\ncatch(e) { throw new Error('JSON non parsabile'); }\n\nconst emojis = {\n  AI: ':robot_face:',\n  Marketing: ':bar_chart:',\n  Business: ':briefcase:',\n  Release: ':package:',\n  Tools: ':wrench:'\n};\n\nconst articoliText = d.articoli.map(function(a) {\n  const emoji = emojis[a.tag] || ':newspaper:';\n  return emoji + ' *' + a.titolo + '*\\n' + a.riassunto + '\\n<' + a.link + '|Leggi →>';\n}).join('\\n\\n');\n\nconst messaggio = ':newspaper: *' + d.intro + '*\\n\\n' + articoliText + '\\n\\n_Generato automaticamente · n8n + Claude_';\n\nreturn [{ json: { testo: messaggio } }];"
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000011",
+      "name": "Formatta Messaggio Slack",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1680, 400]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#general",
+        "text": "={{ $json.testo }}",
+        "otherOptions": {
+          "mrkdwn": true
+        }
+      },
+      "id": "a3b4c5d6-0003-4003-8003-000000000012",
+      "name": "Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.1,
+      "position": [1920, 400],
+      "credentials": {
+        "slackApi": {
+          "id": "SLACK_CREDENTIAL_ID",
+          "name": "Slack Bot Token"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {"node": "RSS Ninja Marketing",      "type": "main", "index": 0},
+          {"node": "RSS HubSpot Marketing",    "type": "main", "index": 0},
+          {"node": "RSS VentureBeat AI",       "type": "main", "index": 0},
+          {"node": "GitHub n8n Releases",      "type": "main", "index": 0},
+          {"node": "GitHub LangChain Releases","type": "main", "index": 0}
+        ]
+      ]
+    },
+    "RSS Ninja Marketing":       {"main": [[{"node": "Merge Fonti", "type": "main", "index": 0}]]},
+    "RSS HubSpot Marketing":     {"main": [[{"node": "Merge Fonti", "type": "main", "index": 1}]]},
+    "RSS VentureBeat AI":        {"main": [[{"node": "Merge Fonti", "type": "main", "index": 2}]]},
+    "GitHub n8n Releases":       {"main": [[{"node": "Merge Fonti", "type": "main", "index": 3}]]},
+    "GitHub LangChain Releases": {"main": [[{"node": "Merge Fonti", "type": "main", "index": 4}]]},
+    "Merge Fonti":               {"main": [[{"node": "Filtra 24 Ore",            "type": "main", "index": 0}]]},
+    "Filtra 24 Ore":             {"main": [[{"node": "Prepara Prompt",           "type": "main", "index": 0}]]},
+    "Prepara Prompt":            {"main": [[{"node": "Claude API",               "type": "main", "index": 0}]]},
+    "Claude API":                {"main": [[{"node": "Formatta Messaggio Slack", "type": "main", "index": 0}]]},
+    "Formatta Messaggio Slack":  {"main": [[{"node": "Slack",                    "type": "main", "index": 0}]]}
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a3b4c5d6-0003-4003-8003-000000000099",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "n8n-automation-pack-italia"
+  },
+  "id": "03-slack-daily-digest",
+  "tags": []
+}
