@@ -4,7 +4,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![n8n](https://img.shields.io/badge/n8n-1.x-EA4B71)](https://n8n.io)
-[![Status](https://img.shields.io/badge/status-WIP-orange)](#)
+[![Status](https://img.shields.io/badge/status-ready-brightgreen)](#)
+[![Release](https://img.shields.io/badge/release-v1.0.0-blue)](#)
 
 ---
 
@@ -16,11 +17,11 @@ Cinque automazioni pensate per problemi reali di una PMI italiana — non templa
 
 | # | Workflow | Cosa fa | Stato |
 |---|----------|---------|-------|
-| 01 | [Lead Qualification](workflows/01-lead-qualification/) | Form sito → AI classifica → email + CRM | 🚧 In corso |
-| 02 | [Newsletter Aggregator](workflows/02-newsletter-aggregator/) | RSS multipli → AI riassume → email | ⏳ Pianificato |
-| 03 | [Slack Daily Digest](workflows/03-slack-daily-digest/) | Multi-feed → AI digest → Slack | ⏳ Pianificato |
-| 04 | [Onboarding Clienti](workflows/04-onboarding-clienti/) | Form → email + Drive + Taskade (MCP) | ⏳ Pianificato |
-| 05 | [Risposta Recensioni](workflows/05-risposta-recensioni-google/) | Recensione GMB → bozza AI → approvazione | ⏳ Pianificato |
+| 01 | [Lead Qualification](workflows/01-lead-qualification/) | Form sito → AI classifica → email + Google Sheets | ✅ Pronto |
+| 02 | [Newsletter Aggregator](workflows/02-newsletter-aggregator/) | RSS multipli → AI riassume → email settimanale | ✅ Pronto |
+| 03 | [Slack Daily Digest](workflows/03-slack-daily-digest/) | Multi-feed + GitHub releases → AI digest → Slack | ✅ Pronto |
+| 04 | [Onboarding Clienti](workflows/04-onboarding-clienti/) | Form → email benvenuto + Google Drive + Taskade | ✅ Pronto |
+| 05 | [Risposta Recensioni Google](workflows/05-risposta-recensioni-google/) | Recensioni GMB → bozze AI → email owner | ✅ Pronto |
 
 ## 🚀 Come usare
 
@@ -32,8 +33,28 @@ Cinque automazioni pensate per problemi reali di una PMI italiana — non templa
 ## 🛠️ Stack tecnico
 
 - **n8n** 1.x (self-hosted o n8n.cloud)
-- **Claude API** (anthropic-claude-sonnet-4) per AI
-- **Google Workspace**, **Slack**, **Airtable/Sheets**, **SendGrid** come destinazioni
+- **Claude API** (`claude-sonnet-4-5`) per AI
+- **Google Sheets / Google Drive** (OAuth2)
+- **Slack** (Bot Token)
+- **SMTP** per email
+- **Google Business Profile API** per recensioni
+- **Taskade API** per project management
+
+## 📂 Struttura repository
+
+```
+workflows/
+├── 01-lead-qualification/
+│   ├── workflow.json
+│   └── README.md
+├── 02-newsletter-aggregator/
+├── 03-slack-daily-digest/
+├── 04-onboarding-clienti/
+└── 05-risposta-recensioni-google/
+docs/
+├── prerequisites.md
+└── credential-setup.md
+```
 
 ## 📜 Licenza
 
@@ -45,4 +66,4 @@ Costruito da Francesco — [GitHub](https://github.com/truerider360-design)
 
 ---
 
-*Repository v1.0 in arrivo: domenica 24 maggio 2026*
+*v1.0.0 — rilasciato il 24 maggio 2026*
