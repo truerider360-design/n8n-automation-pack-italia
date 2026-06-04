@@ -106,7 +106,7 @@ _Generato automaticamente · n8n + Claude_
 
 ## Costi stimati
 
-- Claude Sonnet 4.5: ~€0.02–0.04 per esecuzione (prompt ~2000 token + output ~600 token)
+- Claude Sonnet 4.6: ~€0.02–0.04 per esecuzione (prompt ~2000 token + output ~600 token)
 - 5 giorni/settimana × 4 settimane = 20 esecuzioni/mese → ~€0.60–0.80/mese
 - RSS + GitHub Atom: gratuiti, nessuna API key
 - Slack API: gratuita per workspace standard
