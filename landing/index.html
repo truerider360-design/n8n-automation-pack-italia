@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>n8n Automation Pack Italia — RiderVision Studio</title>
+  <meta name="description" content="Cinque workflow n8n AI-powered per PMI italiane. Open source, self-hosted, licenza MIT. Importi il .json e automatizzi." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="n8n Automation Pack Italia" />
+  <meta property="og:description" content="Cinque flussi di lavoro automatizzati per la piccola e media impresa italiana." />
+  <meta property="og:image" content="../assets/cover.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="it_IT" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream:       '#F5EFE4',
+            ink:         '#2C2A26',
+            'warm-grey': '#7A6F5F',
+            terracotta:  '#B23F35',
+            gold:        '#C9B98A',
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans:  ['Inter', 'system-ui', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #F5EFE4;
+      color: #2C2A26;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Double-border frame for hero */
+    .frame-double {
+      position: relative;
+    }
+    .frame-double::before,
+    .frame-double::after {
+      content: '';
+      position: absolute;
+      border: 1px solid #C9B98A;
+      pointer-events: none;
+    }
+    .frame-double::before { inset: 0; }
+    .frame-double::after  { inset: 10px; }
+  </style>
+</head>
+
+<body class="bg-cream text-ink">
+
+  <!-- ================================================================
+       HEADER
+  ================================================================ -->
+  <header class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+    <span class="font-sans text-xs tracking-[0.2em] uppercase text-warm-grey">
+      RiderVision Studio
+    </span>
+    <a href="https://github.com/truerider360-design/n8n-automation-pack-italia"
+       target="_blank" rel="noopener"
+       class="font-sans text-xs tracking-[0.2em] uppercase text-warm-grey hover:text-terracotta transition-colors">
+      GitHub
+    </a>
+  </header>
+
+  <main>
+
+    <!-- ================================================================
+         SEZIONE 1 — HERO
+    ================================================================ -->
+    <section aria-label="Presentazione" class="px-6 py-20 md:py-28">
+      <div class="max-w-3xl mx-auto">
+        <div class="frame-double px-10 py-16 md:px-16 md:py-24 text-center">
+
+          <!-- Eyebrow -->
+          <p class="font-sans text-xs tracking-[0.25em] uppercase text-warm-grey mb-10">
+            n8n.io&nbsp;·&nbsp;Automation Pack&nbsp;·&nbsp;MMXXVI
+          </p>
+
+          <!-- Titolo principale -->
+          <h1 class="font-serif leading-none mb-0">
+            <span class="block text-5xl md:text-7xl font-medium tracking-tight text-ink">
+              n8n Automation Pack
+            </span>
+            <span class="block text-5xl md:text-7xl font-medium tracking-tight italic text-terracotta mt-1">
+              Italia.
+            </span>
+          </h1>
+
+          <!-- Tagline -->
+          <p class="font-serif italic text-xl md:text-2xl text-warm-grey mt-8 mb-0 leading-relaxed">
+            Cinque flussi di lavoro automatizzati,<br />
+            per la piccola e media impresa italiana.
+          </p>
+
+          <!-- Sub-claim -->
+          <p class="font-sans text-xs tracking-[0.2em] uppercase text-warm-grey mt-6 mb-10">
+            Open source&nbsp;·&nbsp;self-host&nbsp;·&nbsp;cloud
+          </p>
+
+          <!-- CTA -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="https://github.com/truerider360-design/n8n-automation-pack-italia"
+               target="_blank" rel="noopener"
+               class="font-sans font-medium text-sm tracking-wide px-8 py-3 border border-terracotta text-terracotta hover:bg-terracotta hover:text-cream transition-colors">
+              Vai al repo GitHub
+            </a>
+            <a href="https://github.com/truerider360-design/n8n-automation-pack-italia/archive/refs/heads/main.zip"
+               class="font-sans text-sm text-warm-grey underline underline-offset-4 decoration-gold hover:text-terracotta transition-colors">
+              Scarica i workflow
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SEZIONE 2 — PERCHÉ ESISTE
+    ================================================================ -->
+    <section aria-label="Perché esiste" class="px-6 py-20 md:py-28 border-t border-gold">
+      <div class="max-w-2xl mx-auto">
+
+        <h2 class="font-serif font-medium text-4xl md:text-5xl tracking-tight mb-12">
+          Perché
+        </h2>
+
+        <div class="space-y-7 text-warm-grey">
+
+          <p>
+            Le PMI italiane non mancano di operatività: mancano di tempo per renderla
+            efficiente. Un team commerciale piccolo legge ogni lead a mano, rispondendo
+            spesso in ritardo. Un'operatrice di marketing consulta dieci fonti per
+            trovare cinque contenuti utili. Chi gestisce i clienti ricrea le stesse
+            cartelle, scrive le stesse email di benvenuto, apre gli stessi task—ogni
+            volta da capo. L'intelligenza artificiale esiste, ma senza un team tecnico
+            interno sembra inaccessibile.
+          </p>
+
+          <p>
+            Il pack risponde in modo concreto: cinque workflow n8n che integrano
+            Claude nelle operazioni che consumano più ore. Si importa il file
+            <code class="font-mono text-sm border border-gold px-1 text-ink">.json</code>
+            in n8n, si configurano le credenziali una volta sola, si attiva il workflow.
+            Non serve scrivere codice. Non serve conoscere i dettagli dell'AI.
+            Il sistema funziona e continua a funzionare senza manutenzione quotidiana.
+          </p>
+
+          <p>
+            Ogni flusso è costruito per girare in self-hosted: i dati rimangono nel
+            proprio ambiente e non transitano su infrastrutture terze non necessarie—
+            una scelta che semplifica la conformità al GDPR.
+            Il codice è rilasciato sotto licenza MIT: si può forkare, modificare e
+            usare in produzione senza chiedere permesso. Nessun abbonamento,
+            nessun lock-in.
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SEZIONE 3 — I CINQUE FLUSSI
+    ================================================================ -->
+    <section aria-label="I cinque flussi" class="px-6 py-20 md:py-28 border-t border-gold">
+      <div class="max-w-6xl mx-auto">
+
+        <h2 class="font-serif font-medium text-4xl md:text-5xl tracking-tight mb-3">
+          I cinque flussi
+        </h2>
+        <p class="font-serif italic text-xl text-warm-grey mb-14">
+          Cinque blocchi da innestare nella tua operatività.
+        </p>
+
+        <!-- Grid: 1 col mobile / 2 col tablet / 3 col desktop → 3+2 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <!-- ── i · Lead Qualification ── -->
+          <article class="border border-gold p-6 flex flex-col gap-5">
+            <div class="w-full aspect-[16/10] border border-dashed border-gold
+                        flex items-center justify-center
+                        text-warm-grey text-xs font-sans tracking-wide"
+                 role="img" aria-label="Screenshot placeholder — Workflow 01">
+              TODO: screenshot W#01
+            </div>
+
+            <div>
+              <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
+                 aria-hidden="true">i</p>
+              <h3 class="font-serif font-medium text-2xl tracking-tight">
+                Lead Qualification
+              </h3>
+            </div>
+
+            <p class="text-warm-grey text-sm leading-relaxed flex-1">
+              Il form del sito arriva nel workflow. Claude legge nome, azienda,
+              messaggio e budget, e restituisce una classificazione—hot, warm o cold—
+              con uno score da 0 a 100 e una motivazione. Il Google Sheet si
+              compila da solo. Se il lead è caldo, parte un'email personalizzata
+              entro trenta secondi.
+            </p>
+
+            <div class="flex items-center gap-3 text-xs font-sans text-warm-grey
+                        border-t border-gold pt-4">
+              <span>🟢 Base</span>
+              <span class="text-gold">·</span>
+              <span>~15 min di setup</span>
+            </div>
+
+            <a href="https://github.com/truerider360-design/n8n-automation-pack-italia/tree/main/workflows/01-lead-qualification"
+               target="_blank" rel="noopener"
+               class="font-sans text-xs tracking-wide text-terracotta hover:underline underline-offset-2">
+              Vedi i dettagli →
+            </a>
+          </article>
+
+          <!-- ── ii · Newsletter Aggregator ── -->
+          <article class="border border-gold p-6 flex flex-col gap-5">
+            <div class="w-full aspect-[16/10] border border-dashed border-gold
+                        flex items-center justify-center
+                        text-warm-grey text-xs font-sans tracking-wide"
+                 role="img" aria-label="Screenshot placeholder — Workflow 02">
+              TODO: screenshot W#02
+            </div>
+
+            <div>
+              <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
+                 aria-hidden="true">ii</p>
+              <h3 class="font-serif font-medium text-2xl tracking-tight">
+                Newsletter Aggregator
+              </h3>
+            </div>
+
+            <p class="text-warm-grey text-sm leading-relaxed flex-1">
+              Ogni lunedì alle nove, il workflow pesca articoli da tre feed RSS
+              in parallelo—marketing, AI, business. Claude filtra gli ultimi
+              sette giorni, sceglie i cinque contenuti più rilevanti, riscrive
+              i titoli in italiano e li riassume in tre o quattro righe.
+              L'email HTML arriva pronta nella tua inbox. Costo mensile:
+              meno di trenta centesimi.
+            </p>
+
+            <div class="flex items-center gap-3 text-xs font-sans text-warm-grey
+                        border-t border-gold pt-4">
+              <span>🟢 Base</span>
+              <span class="text-gold">·</span>
+              <span>~10 min di setup</span>
+            </div>
+
+            <a href="https://github.com/truerider360-design/n8n-automation-pack-italia/tree/main/workflows/02-newsletter-aggregator"
+               target="_blank" rel="noopener"
+               class="font-sans text-xs tracking-wide text-terracotta hover:underline underline-offset-2">
+              Vedi i dettagli →
+            </a>
+          </article>
+
+          <!-- ── iii · Slack Daily Digest ── -->
+          <article class="border border-gold p-6 flex flex-col gap-5">
+            <div class="w-full aspect-[16/10] border border-dashed border-gold
+                        flex items-center justify-center
+                        text-warm-grey text-xs font-sans tracking-wide"
+                 role="img" aria-label="Screenshot placeholder — Workflow 03">
+              TODO: screenshot W#03
+            </div>
+
+            <div>
+              <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
+                 aria-hidden="true">iii</p>
+              <h3 class="font-serif font-medium text-2xl tracking-tight">
+                Slack Daily Digest
+              </h3>
+            </div>
+
+            <p class="text-warm-grey text-sm leading-relaxed flex-1">
+              Dal lunedì al venerdì, alle nove in punto, il flusso raccoglie
+              le ultime ventiquattro ore da cinque fonti—tre RSS e le release
+              di n8n e LangChain direttamente da GitHub. Claude sceglie i top
+              cinque, scrive due o tre righe per ciascuno in italiano, e il
+              messaggio compare nel canale Slack già formattato. Trenta secondi
+              di lettura, team aggiornato.
+            </p>
+
+            <div class="flex items-center gap-3 text-xs font-sans text-warm-grey
+                        border-t border-gold pt-4">
+              <span>🟡 Intermedio</span>
+              <span class="text-gold">·</span>
+              <span>~20 min di setup</span>
+            </div>
+
+            <a href="https://github.com/truerider360-design/n8n-automation-pack-italia/tree/main/workflows/03-slack-daily-digest"
+               target="_blank" rel="noopener"
+               class="font-sans text-xs tracking-wide text-terracotta hover:underline underline-offset-2">
+              Vedi i dettagli →
+            </a>
+          </article>
+
+          <!-- ── iv · Onboarding Clienti ── -->
+          <article class="border border-gold p-6 flex flex-col gap-5">
+            <div class="w-full aspect-[16/10] border border-dashed border-gold
+                        flex items-center justify-center
+                        text-warm-grey text-xs font-sans tracking-wide"
+                 role="img" aria-label="Screenshot placeholder — Workflow 04">
+              TODO: screenshot W#04
+            </div>
+
+            <div>
+              <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
+                 aria-hidden="true">iv</p>
+              <h3 class="font-serif font-medium text-2xl tracking-tight">
+                Onboarding Clienti
+              </h3>
+            </div>
+
+            <p class="text-warm-grey text-sm leading-relaxed flex-1">
+              Un nuovo cliente firma il contratto e parte il trigger. Claude
+              genera l'email di benvenuto con nome dell'azienda e servizio
+              acquistato. In parallelo: l'email parte via SMTP, Google Drive
+              crea la cartella del cliente, Taskade apre un progetto con sette
+              task standard già pronti. Dieci secondi, zero click ripetitivi.
+            </p>
+
+            <div class="flex items-center gap-3 text-xs font-sans text-warm-grey
+                        border-t border-gold pt-4">
+              <span>🟡 Intermedio</span>
+              <span class="text-gold">·</span>
+              <span>~25 min di setup</span>
+            </div>
+
+            <a href="https://github.com/truerider360-design/n8n-automation-pack-italia/tree/main/workflows/04-onboarding-clienti"
+               target="_blank" rel="noopener"
+               class="font-sans text-xs tracking-wide text-terracotta hover:underline underline-offset-2">
+              Vedi i dettagli →
+            </a>
+          </article>
+
+          <!-- ── v · Risposta Recensioni Google ── -->
+          <article class="border border-gold p-6 flex flex-col gap-5">
+            <div class="w-full aspect-[16/10] border border-dashed border-gold
+                        flex items-center justify-center
+                        text-warm-grey text-xs font-sans tracking-wide"
+                 role="img" aria-label="Screenshot placeholder — Workflow 05">
+              TODO: screenshot W#05
+            </div>
+
+            <div>
+              <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
+                 aria-hidden="true">v</p>
+              <h3 class="font-serif font-medium text-2xl tracking-tight">
+                Risposta Recensioni Google
+              </h3>
+            </div>
+
+            <p class="text-warm-grey text-sm leading-relaxed flex-1">
+              Ogni mattina, polling sull'API Google Business Profile. Il
+              workflow recupera le recensioni senza risposta—massimo cinque
+              per giro. Claude genera una bozza per ciascuna: ringraziamento
+              personalizzato per le positive, risposta empatica per le negative.
+              Arrivano in un'unica email, pronte per il copia-incolla. Il
+              workflow non pubblica da solo.
+            </p>
+
+            <div class="flex items-center gap-3 text-xs font-sans text-warm-grey
+                        border-t border-gold pt-4">
+              <span>🟡 Intermedio</span>
+              <span class="text-gold">·</span>
+              <span>~30 min di setup</span>
+            </div>
+
+            <a href="https://github.com/truerider360-design/n8n-automation-pack-italia/tree/main/workflows/05-risposta-recensioni-google"
+               target="_blank" rel="noopener"
+               class="font-sans text-xs tracking-wide text-terracotta hover:underline underline-offset-2">
+              Vedi i dettagli →
+            </a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SEZIONE 4 — STACK
+    ================================================================ -->
+    <section aria-label="Stack tecnico" class="px-6 py-20 md:py-28 border-t border-gold">
+      <div class="max-w-3xl mx-auto">
+
+        <h2 class="font-serif font-medium text-4xl md:text-5xl tracking-tight mb-10">
+          Stack
+        </h2>
+
+        <div class="flex flex-wrap gap-3 mb-8">
+          <span class="font-sans text-sm border border-gold px-3 py-1 text-ink">n8n</span>
+          <span class="font-sans text-sm border border-gold px-3 py-1 text-ink">Anthropic Claude</span>
+          <span class="font-sans text-sm border border-gold px-3 py-1 text-ink">Google Workspace</span>
+          <span class="font-sans text-sm border border-gold px-3 py-1 text-ink">Slack</span>
+          <span class="font-sans text-sm border border-gold px-3 py-1 text-ink">Taskade</span>
+          <span class="font-sans text-sm border border-gold px-3 py-1 text-ink">Gmail</span>
+          <span class="font-sans text-sm border border-gold px-3 py-1 text-terracotta">MIT License</span>
+        </div>
+
+        <p class="font-sans text-warm-grey">
+          Self-hostable. Niente vendor lock-in.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- ================================================================
+         SEZIONE 5 — ABOUT RIDERVISION STUDIO
+    ================================================================ -->
+    <section aria-label="RiderVision Studio" class="px-6 py-20 md:py-28 border-t border-gold">
+      <div class="max-w-2xl mx-auto">
+
+        <h2 class="font-serif font-medium text-4xl md:text-5xl tracking-tight mb-2">
+          RiderVision Studio
+        </h2>
+        <p class="font-serif italic text-xl text-warm-grey mb-10">Roma, 2026.</p>
+
+        <div class="space-y-6 text-warm-grey">
+
+          <p>
+            RiderVision Studio è uno studio di automazione AI con base a Roma,
+            specializzato nella progettazione e consegna di workflow operativi
+            per PMI italiane. Il lavoro si concentra su un obiettivo preciso:
+            portare flussi funzionanti—non prototype, non proof of concept—
+            direttamente nelle operazioni di chi non dispone di un team tecnico
+            interno. Ogni progetto viene costruito per essere attivo, misurabile
+            e gestibile da chi lo usa.
+          </p>
+
+          <p>
+            Oltre a questo pack, lo studio progetta automazioni su misura per
+            i flussi specifici del cliente: integrazione di Claude in processi
+            aziendali esistenti, costruzione di pipeline dati, orchestrazione
+            di tool SaaS. Il punto di partenza è sempre il problema operativo,
+            non la tecnologia.
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================================================================
+       FOOTER
+  ================================================================ -->
+  <footer class="border-t border-gold px-6 pt-10 pb-12">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="flex flex-col md:flex-row items-start md:items-center
+                  justify-between gap-6 mb-6">
+
+        <p class="font-sans text-sm text-warm-grey tracking-wide">
+          RiderVision Studio&nbsp;·&nbsp;Roma&nbsp;·&nbsp;MMXXVI
+        </p>
+
+        <nav aria-label="Link" class="flex flex-wrap gap-x-6 gap-y-2
+                                       font-sans text-sm text-warm-grey">
+          <a href="https://github.com/truerider360-design"
+             target="_blank" rel="noopener"
+             class="hover:text-terracotta transition-colors">
+            GitHub
+          </a>
+          <a href="https://github.com/truerider360-design/n8n-automation-pack-italia"
+             target="_blank" rel="noopener"
+             class="hover:text-terracotta transition-colors">
+            Repo
+          </a>
+          <!-- TODO: sostituire # con il profilo LinkedIn definitivo -->
+          <a href="#"
+             class="hover:text-terracotta transition-colors">
+            LinkedIn
+          </a>
+          <!-- TODO: verificare indirizzo email prima del lancio -->
+          <a href="mailto:hello@ridervision.studio"
+             class="hover:text-terracotta transition-colors">
+            hello@ridervision.studio
+          </a>
+        </nav>
+
+      </div>
+
+      <p class="font-sans text-xs text-warm-grey border-t border-gold pt-6 tracking-wide">
+        MIT License&nbsp;·&nbsp;Costruito con n8n + Claude
+      </p>
+
+    </div>
+  </footer>
+
+</body>
+</html>
