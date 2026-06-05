@@ -93,7 +93,7 @@ L'email finale è HTML responsive, visualizzabile su mobile e desktop.
 
 ## Costi stimati
 
-- Claude Sonnet 4.5: ~€0.03–0.06 per esecuzione (prompt lungo ~3000 token + output ~1500 token)
+- Claude Sonnet 4.6: ~€0.03–0.06 per esecuzione (prompt lungo ~3000 token + output ~1500 token)
 - 4 esecuzioni/mese = ~€0.15–0.25/mese
 - RSS feed: gratuiti, nessuna credenziale richiesta
 - SMTP: dipende dal provider (Gmail: 500 email/giorno gratis)
