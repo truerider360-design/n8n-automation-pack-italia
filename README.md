@@ -33,7 +33,7 @@ Cinque automazioni pensate per problemi reali di una PMI italiana — non templa
 ## 🛠️ Stack tecnico
 
 - **n8n** 1.x (self-hosted o n8n.cloud)
-- **Claude API** (`claude-sonnet-4-5`) per AI
+- **Claude API** (`claude-sonnet-4-6`) per AI
 - **Google Sheets / Google Drive** (OAuth2)
 - **Slack** (Bot Token)
 - **SMTP** per email
@@ -60,9 +60,12 @@ docs/
 
 MIT — vedi [LICENSE](LICENSE). Sentiti libero di forkare, modificare, usare in produzione.
 
-## 🤝 Author
+## 🤝 Autore
 
-Costruito da Francesco — [GitHub](https://github.com/truerider360-design)
+Costruito da **RiderVision Studio** — studio di automazione AI con base a Roma.
+[GitHub](https://github.com/truerider360-design) · truerider360@gmail.com
+
+Hai bisogno di un'automazione su misura per la tua PMI? Scrivimi.
 
 ---
 
