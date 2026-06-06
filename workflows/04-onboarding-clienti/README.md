@@ -127,7 +127,7 @@ Risultato atteso entro 10 secondi:
 
 ## Costi stimati
 
-- Claude Sonnet 4.5: ~€0.01–0.02 per onboarding (prompt ~400 token + output ~600 token)
+- Claude Sonnet 4.6: ~€0.01–0.02 per onboarding (prompt ~400 token + output ~600 token)
 - Google Drive: gratuito
 - Taskade: piano free include API access con limiti
 - SMTP: dipende dal provider

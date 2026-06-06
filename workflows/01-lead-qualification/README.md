@@ -138,6 +138,6 @@ Risultato atteso: classificazione `cold`, score ≤ 39, email di cortesia inviat
 
 ## Costi stimati
 
-- Claude Sonnet 4.5: ~€0.008–0.015 per qualificazione (≈500 token input + 150 output)
+- Claude Sonnet 4.6: ~€0.008–0.015 per qualificazione (≈500 token input + 150 output)
 - Google Sheets: gratuito
 - SMTP: dipende dal provider (Gmail free tier: 500 email/giorno)
