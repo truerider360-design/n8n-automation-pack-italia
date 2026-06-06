@@ -8,7 +8,7 @@ Requisiti tecnici per usare i workflow di questo pack.
 - **Hosting**: self-hosted (consigliato per privacy dei dati cliente) oppure n8n.cloud
 - **Risorse minime**: 1 vCPU, 1GB RAM, 10GB disco
 - **Nodi base usati**: Webhook, HTTP Request, Code, IF/Switch, Cron
-- **Nodi servizio**: Anthropic, Google Drive, Slack, RSS, Airtable, Send Email
+- **Nodi servizio**: Anthropic, Google Sheets, Google Drive, Slack, RSS, Taskade, Send Email
 
 ## Account e API keys
 
@@ -16,15 +16,15 @@ Per i 5 workflow del pack ti servono account/credenziali sui servizi seguenti (s
 
 | Servizio | Workflow | Tipo credenziale | Costo |
 |----------|----------|------------------|-------|
-| Anthropic Claude API | 01, 02, 03, 04, 05 | API key | Pay-as-you-go (~€0.01/qualificazione lead) |
-| SendGrid (o SMTP) | 01, 02, 04 | API key | Free tier 100 email/giorno |
-| Airtable (o Google Sheets) | 01 | Personal access token | Free fino 1000 record/base |
+| Anthropic Claude API | 01, 02, 03, 04, 05 | API key (Header Auth) | Pay-as-you-go (~€0.01/qualificazione lead) |
+| SMTP (qualsiasi provider) | 01, 02, 04, 05 | Host/porta/utente/password | Free tier provider (Gmail ~500 email/giorno) |
+| Google Sheets | 01 | OAuth2 | Gratis |
 | RSS feeds | 02, 03 | Nessuna | Gratis |
-| Slack | 03 | Bot OAuth | Gratis |
-| GitHub API (releases feed) | 03 | Personal access token (read-only) | Gratis |
+| Slack | 03 | Bot OAuth Token | Gratis |
+| GitHub Releases (Atom feed) | 03 | Nessuna | Gratis |
 | Google Drive | 04 | OAuth2 | Gratis (15GB) |
-| Taskade (via MCP) | 04 | OAuth | Free tier con limiti |
-| Google My Business API | 05 | OAuth2 | Gratis |
+| Taskade | 04 | API token (Header Auth) | Free tier con limiti |
+| Google My Business | 05 | OAuth2 | Gratis |
 
 ## Skill richieste
 
