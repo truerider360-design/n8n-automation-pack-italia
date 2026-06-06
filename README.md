@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![n8n](https://img.shields.io/badge/n8n-1.x-EA4B71)](https://n8n.io)
 [![Status](https://img.shields.io/badge/status-ready-brightgreen)](#)
-[![Release](https://img.shields.io/badge/release-v1.0.0-blue)](#)
+[![Release](https://img.shields.io/badge/release-v1.0.0-blue)](https://github.com/truerider360-design/n8n-automation-pack-italia/releases)
 
 ---
 

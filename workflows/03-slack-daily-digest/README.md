@@ -78,8 +78,8 @@ Toggle **Inactive → Active**. Il digest parte ogni lunedì–venerdì alle 09:
 ```
 📰 *Daily Digest venerdì 15 maggio*
 
-🤖 *Claude 3.5 Sonnet supera GPT-4 nei benchmark di coding*
-Anthropic ha rilasciato un aggiornamento che migliora le performance del 40% su task di programmazione.
+🤖 *Nuovo modello AI open-weight si avvicina ai modelli proprietari sul coding*
+Un rilascio recente abbatte i costi di inferenza mantenendo qualità competitiva sui task di programmazione.
 <https://venturebeat.com/...|Leggi →>
 
 📦 *n8n v1.48 — nuovo nodo AI Agent*
