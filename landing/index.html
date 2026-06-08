@@ -208,12 +208,9 @@
 
           <!-- ── i · Lead Qualification ── -->
           <article class="border border-gold p-6 flex flex-col gap-5">
-            <div class="w-full aspect-[16/10] border border-dashed border-gold
-                        flex items-center justify-center
-                        text-warm-grey text-xs font-sans tracking-wide"
-                 role="img" aria-label="Screenshot placeholder — Workflow 01">
-              TODO: screenshot W#01
-            </div>
+            <img src="w01.png" width="1320" height="600" loading="lazy"
+                 class="w-full aspect-[22/10] object-cover border border-gold bg-ink"
+                 alt="Workflow n8n Lead Qualification: form del sito, Claude classifica il lead, salvataggio su Google Sheets ed email automatica" />
 
             <div>
               <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
@@ -247,12 +244,9 @@
 
           <!-- ── ii · Newsletter Aggregator ── -->
           <article class="border border-gold p-6 flex flex-col gap-5">
-            <div class="w-full aspect-[16/10] border border-dashed border-gold
-                        flex items-center justify-center
-                        text-warm-grey text-xs font-sans tracking-wide"
-                 role="img" aria-label="Screenshot placeholder — Workflow 02">
-              TODO: screenshot W#02
-            </div>
+            <img src="w02.png" width="1320" height="600" loading="lazy"
+                 class="w-full aspect-[22/10] object-cover border border-gold bg-ink"
+                 alt="Workflow n8n Newsletter Aggregator: tre feed RSS, Claude filtra e riassume, invio della newsletter HTML" />
 
             <div>
               <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
@@ -287,12 +281,9 @@
 
           <!-- ── iii · Slack Daily Digest ── -->
           <article class="border border-gold p-6 flex flex-col gap-5">
-            <div class="w-full aspect-[16/10] border border-dashed border-gold
-                        flex items-center justify-center
-                        text-warm-grey text-xs font-sans tracking-wide"
-                 role="img" aria-label="Screenshot placeholder — Workflow 03">
-              TODO: screenshot W#03
-            </div>
+            <img src="w03.png" width="1320" height="600" loading="lazy"
+                 class="w-full aspect-[22/10] object-cover border border-gold bg-ink"
+                 alt="Workflow n8n Slack Daily Digest: cinque fonti RSS e GitHub, Claude seleziona i top cinque, post su Slack" />
 
             <div>
               <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
@@ -327,12 +318,9 @@
 
           <!-- ── iv · Onboarding Clienti ── -->
           <article class="border border-gold p-6 flex flex-col gap-5">
-            <div class="w-full aspect-[16/10] border border-dashed border-gold
-                        flex items-center justify-center
-                        text-warm-grey text-xs font-sans tracking-wide"
-                 role="img" aria-label="Screenshot placeholder — Workflow 04">
-              TODO: screenshot W#04
-            </div>
+            <img src="w04.png" width="1320" height="600" loading="lazy"
+                 class="w-full aspect-[22/10] object-cover border border-gold bg-ink"
+                 alt="Workflow n8n Onboarding Clienti: webhook, Claude genera l'email, in parallelo invio email, cartella Google Drive e progetto Taskade" />
 
             <div>
               <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
@@ -366,12 +354,9 @@
 
           <!-- ── v · Risposta Recensioni Google ── -->
           <article class="border border-gold p-6 flex flex-col gap-5">
-            <div class="w-full aspect-[16/10] border border-dashed border-gold
-                        flex items-center justify-center
-                        text-warm-grey text-xs font-sans tracking-wide"
-                 role="img" aria-label="Screenshot placeholder — Workflow 05">
-              TODO: screenshot W#05
-            </div>
+            <img src="w05.png" width="1320" height="600" loading="lazy"
+                 class="w-full aspect-[22/10] object-cover border border-gold bg-ink"
+                 alt="Workflow n8n Risposta Recensioni Google: trigger su nuova recensione via email, Claude genera le bozze, email di notifica all'owner" />
 
             <div>
               <p class="font-serif italic text-terracotta text-lg leading-none mb-1"
@@ -382,9 +367,9 @@
             </div>
 
             <p class="text-warm-grey text-sm leading-relaxed flex-1">
-              Ogni mattina, polling sull'API Google Business Profile. Il
-              workflow recupera le recensioni senza risposta—massimo cinque
-              per giro. Claude genera una bozza per ciascuna: ringraziamento
+              A ogni nuova recensione che arriva via email, scatta il
+              workflow, che raccoglie le recensioni ancora senza risposta—massimo
+              cinque per giro. Claude genera una bozza per ciascuna: ringraziamento
               personalizzato per le positive, risposta empatica per le negative.
               Arrivano in un'unica email, pronte per il copia-incolla. Il
               workflow non pubblica da solo.
